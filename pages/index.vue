@@ -15,20 +15,13 @@
 </template>
 
 <script setup lang="ts">
-/**
- * This PageMdcContent component is responsible for rendering the Markdown content of a page.
- * It should be generic enough to be utilized both for the [...page_slug].vue dynamic pages, as well as
- * for the "required" portal-defined pages such as `/products`, so that the route is enforced, but the
- * user is free to customize the page content via markdown configuration.
- */
 import { parseMarkdown } from '@nuxtjs/mdc/runtime'
-
 
 const route = useRoute()
 const fetchKey = computed((): string => `portal-page${route.path.replace(/\//g, '-')}`)
 
 const { transform, getCachedData } = serveCachedData()
-const { data: pageData, error: pageError } = await useFetch('/api/document', {
+const { data: pageData, error: pageError } = await useFetch('/api/markdown', {
   key: fetchKey.value,
   transform,
   getCachedData,

@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   // Simulate a 200ms delay
-  await new Promise(resolve => setTimeout(resolve, 200))
+  await new Promise(resolve => setTimeout(resolve, 250))
 
   const query = getQuery(event)
   const name = query.name || ''

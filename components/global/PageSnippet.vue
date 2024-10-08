@@ -46,7 +46,7 @@ provide(SNIPPET_NESTING_LEVEL_INJECTION_KEY, snippetNestingLevel.value + 1)
 const fetchKey = computed((): string => `portal-snippet-${(snippetName.value || componentId).replace(/\//g, '-')}`)
 
 const { transform, getCachedData } = serveCachedData()
-const { data: snippetData, error: snippetError } = await useFetch('/api/document', {
+const { data: snippetData, error: snippetError } = await useFetch('/api/markdown', {
   query: {
     name: 'snippet',
   },
