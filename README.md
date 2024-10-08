@@ -1,6 +1,8 @@
 # MDC Reproductions
 
-This branch serves as a reproduction for rendering nested markdown content from nested `MDCRenderer` components. The initial markdown content contains MDC `page-snippet` block components that fetch additional raw markdown to be rendered in their own `MDCRenderer` component.
+This branch serves as a reproduction for rendering nested markdown content (e.g. reusable "snippets") from nested `MDCRenderer` components.
+
+The initial markdown content fetched by a page would contain additional MDC `page-snippet` block components that internally fetch additional raw markdown to be rendered in their own `MDCRenderer` component. Since the child components need to fetch their content before the top-level parent should resolve, there needs to be a way to "defer rendering" of the parent until all of the child nodes have been processed and had a chance to fetch and render their content.
 
 If there are too many `page-snippet` components (e.g. if the data in all components takes a bit to load), the parent component in `index.vue` resolves before all of the internal `page-snippet` components have finished fetching their data.
 
@@ -16,7 +18,7 @@ When running the project, you'll observe:
 
 **Is it possible to defer the resolution of the parent `MDCRenderer` component in `index.vue` so that it waits for all child nodes to be resolved?**
 
-I realize there could be a performance hit here if the page were to contain ~100 separate calls for other documents. Any suggestions on optimization or alternative solutions?
+I realize there could be a performance hit here if the page were to contain ~100 separate calls for other documents. Any suggestions on optimization or alternative solutions are welcome. For the first iteration, I was thinking of limiting the number of "levels" allowed (see the `snippetNestingLevel` variable in `/components/global/PageSnippet.vue`).
 
 ## Other details
 

@@ -62,7 +62,9 @@ const nodes = [...snippetParentNodes.value].join('|')
 // Strip out recursive snippet(s), looking for `name` prop in the content
 const snippetRegex = new RegExp(`(name)(=|:)( )?('|"|\`)?('|"|\`)?(${nodes})('|"|\`)?('|"|\`)?`, 'i')
 // Important: Replace $6 with an empty string to remove the snippet name from the content; must be a space to avoid evaluating as a boolean prop.
-const sanitizedData = snippetNestingLevel.value < 3 ? String(snippetData.value?.content || '')?.replace(snippetRegex, `$1$2$3$4$5${String(' ')}$7`) || '' : ''
+const sanitizedData = String(snippetData.value?.content || '')?.replace(snippetRegex, `$1$2$3$4$5${String(' ')}$7`) || ''
+// Alternatively, you could utilize the levels variable to only allow nesting `n` levels deep:
+// const sanitizedData = snippetNestingLevel.value < 3 ? String(snippetData.value?.content || '')?.replace(snippetRegex, `$1$2$3$4$5${String(' ')}$7`) || '' : ''
 
 const removeInvalidSnippets = (obj: Record<string, any>): Record<string, any> | null => {
   if (Array.isArray(obj)) {
