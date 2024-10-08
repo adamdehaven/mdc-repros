@@ -1297,7 +1297,7 @@ const document = defineEventHandler(async (event) => {
 `;
   } else {
     content = `
-## Nested content
+- Nested content
 `;
   }
   return {
