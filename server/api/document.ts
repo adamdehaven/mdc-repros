@@ -1,19 +1,30 @@
-import { parseMarkdown } from "@nuxtjs/mdc/runtime";
-import type { MDCParserResult } from "@nuxtjs/mdc";
-
 export default defineEventHandler(async (event) => {
-  const markdown = `---
-title: Page
-description: This is the markdown page
----
+  // Simulate a 200ms delay
+  await new Promise(resolve => setTimeout(resolve, 200))
 
-# Markdown Content
+  const query = getQuery(event)
+  const name = query.name || ''
+  let content = ''
 
-\`\`\`typescript
-const name: string = 'Marty McFly'
-\`\`\`
+  if (!name) {
+
+    content = `
+# MDC nested snippets
+
+:page-snippet{ name="document" }
+:page-snippet{ name="document" }
+:page-snippet{ name="document" }
+:page-snippet{ name="document" }
+:page-snippet{ name="document" }
+:page-snippet{ name="document" }
 `;
-  const result: MDCParserResult = await parseMarkdown(markdown);
+  } else {
+    content = `
+## Nested content
+`;
+  }
 
-  return result;
+  return {
+    content,
+  }
 });

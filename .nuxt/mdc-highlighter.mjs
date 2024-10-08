@@ -1,11 +1,4 @@
 import { getMdcConfigs } from '#mdc-configs'
-import { getHighlighterCore, addClassToHast, isSpecialLang, isSpecialTheme } from "shiki/core";
-import {
-  transformerNotationDiff,
-  transformerNotationErrorLevel,
-  transformerNotationFocus,
-  transformerNotationHighlight
-} from "@shikijs/transformers";
 export function createShikiHighlighter({
   langs = [],
   themes = [],
@@ -17,15 +10,28 @@ export function createShikiHighlighter({
   let shiki;
   let configs;
   async function _getShiki() {
-    const shiki2 = await getHighlighterCore({
+    const { createHighlighterCore, addClassToHast, isSpecialLang, isSpecialTheme } = await import("shiki/core");
+    const { transformerNotationDiff, transformerNotationErrorLevel, transformerNotationFocus, transformerNotationHighlight } = await import("@shikijs/transformers");
+    const shiki2 = await createHighlighterCore({
       langs,
       themes,
-      loadWasm: () => import.meta.client ? import('shiki/wasm') : import('shiki/onig.wasm')
+      loadWasm: () => import("shiki/wasm")
     });
     for await (const config of await getConfigs()) {
       await config.shiki?.setup?.(shiki2);
     }
-    return shiki2;
+    return {
+      shiki: shiki2,
+      addClassToHast,
+      isSpecialLang,
+      isSpecialTheme,
+      transformers: [
+        transformerNotationDiff(),
+        transformerNotationErrorLevel(),
+        transformerNotationFocus(),
+        transformerNotationHighlight()
+      ]
+    };
   }
   async function getShiki() {
     if (!shiki) {
@@ -39,14 +45,27 @@ export function createShikiHighlighter({
     }
     return configs;
   }
-  const baseTransformers = [
-    transformerNotationDiff(),
-    transformerNotationFocus(),
-    transformerNotationHighlight(),
-    transformerNotationErrorLevel()
-  ];
   const highlighter = async (code, lang, theme, options = {}) => {
-    const shiki2 = await getShiki();
+    const {
+      shiki: shiki2,
+      addClassToHast,
+      isSpecialLang,
+      isSpecialTheme,
+      transformers: baseTransformers
+    } = await getShiki();
+    const codeToHastOptions = {
+      defaultColor: false,
+      meta: {
+        __raw: options.meta
+      }
+    };
+    if (lang === "ts-type" || lang === "typescript-type") {
+      lang = "typescript";
+      codeToHastOptions.grammarContextCode = "let a:";
+    } else if (lang === "vue-html" || lang === "vue-template") {
+      lang = "vue";
+      codeToHastOptions.grammarContextCode = "<template>";
+    }
     const themesObject = typeof theme === "string" ? { default: theme } : theme || {};
     const loadedThemes = shiki2.getLoadedThemes();
     const loadedLanguages = shiki2.getLoadedLanguages();
@@ -81,11 +100,8 @@ export function createShikiHighlighter({
     }
     const root = shiki2.codeToHast(code.trimEnd(), {
       lang,
+      ...codeToHastOptions,
       themes: themesObject,
-      defaultColor: false,
-      meta: {
-        __raw: options.meta
-      },
       transformers: [
         ...transformers,
         {

@@ -3,9 +3,7 @@ import { updateAppConfig } from '#app/config'
 import { defuFn } from 'defu'
 
 const inlineConfig = {
-  "nuxt": {
-    "buildId": "3871352c-6033-4650-b988-974fbca3004d"
-  }
+  "nuxt": {}
 }
 
 // Vite - webpack is handled directly in #app/config
