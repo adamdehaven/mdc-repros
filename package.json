@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@kong/kongponents": "9.14.22-pr.2534.cc5eaf6ea.0",
     "nuxt": "^3.14.1592",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"

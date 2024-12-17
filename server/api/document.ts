@@ -7,11 +7,9 @@ title: Page
 description: This is the markdown page
 ---
 
-# Markdown Content
-
-\`\`\`typescript
-const name: string = 'Marty McFly'
-\`\`\`
+::external-button
+Button Text
+::
 `;
   const result: MDCParserResult = await parseMarkdown(markdown);
 

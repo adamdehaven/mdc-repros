@@ -8,6 +8,11 @@ export default defineNuxtConfig({
         default: "material-theme-lighter",
       },
     },
+    components: {
+      map: {
+        ExternalButton: 'KButton', // Register the global component as 'KButton'
+      }
+    }
   },
   nitro: {
     preset: "cloudflare-pages",
